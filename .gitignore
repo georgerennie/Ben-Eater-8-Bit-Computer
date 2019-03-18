@@ -1,0 +1,4 @@
+.vscode/*
+iCEcube2/*
+!iCEcube2/iCEcube2_sbt.project
+!iCEcube2/iCEcube2_syn.prj
