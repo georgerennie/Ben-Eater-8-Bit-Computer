@@ -21,7 +21,7 @@ module alu(
     output zero //Zero flag output to be fed into flag register
     );
 
-    wire reg_A_out;
+    wire [7 : 0] reg_A_out;
     register reg_A [7 : 0] (
         .in(bus),
         .clk(clk),
@@ -30,7 +30,7 @@ module alu(
         .out(reg_A_out)
     );
 
-    wire reg_B_out;
+    wire [7 : 0] reg_B_out;
     register reg_B [7 : 0] (
         .in(bus),
         .clk(clk),
