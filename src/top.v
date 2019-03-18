@@ -4,6 +4,8 @@
 `define GRVM_PATH(module_file_address) "../../Shared Files/Verilog/George-Rennie-Verilog-Modules/module_file_address"
 `include `GRVM_PATH(synchronous/reset_conditioner.v)
 
+`include "alu.v"
+
 module top(
     input clk,               // 100MHz clock
     input rst_n,             // reset button (active low)
