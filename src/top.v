@@ -1,8 +1,8 @@
 `include "emulate_pull_down.v"
 
 //Quickly include files from the George Rennie Verilog Modules Library:
-`define GRVM_PATH(module_file_address) = "../../Shared Files/Verilog/George-Rennie-Verilog-Modules/module_file_address"
-//`include `GRVM_PATH(GRVM_MODULE_DIRECTORY/GRVM_FILE.v)*/
+`define GRVM_PATH(module_file_address) "../../Shared Files/Verilog/George-Rennie-Verilog-Modules/module_file_address"
+`include `GRVM_PATH(synchronous/reset_conditioner.v)
 
 module top(
     input clk,               // 100MHz clock
@@ -17,6 +17,13 @@ module top(
 
     input usb_rx,            // USB->Serial input
     output usb_tx            // USB->Serial output
+    );
+
+    wire rst;
+    reset_conditioner reset_cond (
+        .clk(clk),
+        .in(~rst_n),
+        .out(rst)
     );
 
     //emulate_pull_down caters for the lack of pull down resistors on the Cu
