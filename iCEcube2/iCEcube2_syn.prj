@@ -1,10 +1,10 @@
 #-- Synopsys, Inc.
 #-- Project file C:\!!Product Design\Ben-Eater-8-Bit-Computer\iCEcube2\iCEcube2_syn.prj
 #project files
-add_file -verilog -lib work "../src/emulate_pull_down.v"
-add_file -verilog -lib work "../src/top.v"
-add_file -constraint -lib work "../synthesis_constraints/clock_constraints.sdc"
 
+add_file -verilog -lib work "../src/emulate_pull_down.v" 
+add_file -verilog -lib work "../src/top.v" 
+add_file -constraint -lib work "../synthesis_constraints/clock_constraints.sdc"
 #implementation: "iCEcube2_Implmnt"
 impl -add iCEcube2_Implmnt -type fpga
 
@@ -54,5 +54,5 @@ set_option -write_apr_constraint 1
 project -result_format "edif"
 project -result_file ./iCEcube2_Implmnt/iCEcube2.edf
 project -log_file "./iCEcube2_Implmnt/iCEcube2.srr"
-impl -active "iCEcube2_Implmnt"
+impl -active iCEcube2_Implmnt
 project -run synthesis -clean
