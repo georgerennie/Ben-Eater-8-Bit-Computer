@@ -7,7 +7,7 @@
 module alu(
     inout [7 : 0] bus,
     input clk,
-    input rst, //Clears registers
+    input clr, //Clears registers
 
     input load_A, //load and write alu registers to/from bus
     input load_B,
@@ -25,7 +25,7 @@ module alu(
     register reg_A [7 : 0] (
         .in(bus),
         .clk(clk),
-        .clr(rst),
+        .clr(clr),
         .load(load_A),
         .out(reg_A_out)
     );
@@ -34,7 +34,7 @@ module alu(
     register reg_B [7 : 0] (
         .in(bus),
         .clk(clk),
-        .clr(rst),
+        .clr(clr),
         .load(load_B),
         .out(reg_B_out)
     );
