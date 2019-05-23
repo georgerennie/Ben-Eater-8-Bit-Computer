@@ -5,10 +5,10 @@
 `include `GRVM_PATH(synchronous/reset_conditioner.v)
 `include `GRVM_PATH(interfacing/tri_state_buffer.v)
 `include `GRVM_PATH(synchronous/binary_counter.v)
-`include `GRVM_PATH(logic/dff.v)
 
 `include "alu.v"
 `include "ram.v"
+`include "pc.v"
 
 module top(
     input clk,               // 100MHz clock
@@ -64,7 +64,7 @@ module top(
         .clk(clk)
     );
 
-    assign slow_clk = ~clk_count.out[27];
+    assign slow_clk = ~clk_count.out[25];
 
     tri_state_buffer test_input [7 : 0] (
         .in(dip_pd_out[7 : 0]),
@@ -94,6 +94,14 @@ module top(
         .MI(dip_pd_out[16]),
         .RO(dip_pd_out[15]),
         .RI(dip_pd_out[14])
+    );
+
+    pc pc_inst(
+        .bus(main_bus),
+        .clk(slow_clk),
+        .CO(dip_pd_out[13]),
+        .CE(dip_pd_out[12]),
+        .J(dip_pd_out[11])
     );
 
     always @* begin

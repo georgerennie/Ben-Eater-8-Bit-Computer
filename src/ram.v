@@ -42,9 +42,9 @@ module ram (
     );
 
     tri_state_buffer output_buf [7 : 0] (
-            .in(ram_out),
-            .out(bus),
-            .enable(RO)
+        .in(ram_out),
+        .out(bus),
+        .enable(RO)
     );
 
     defparam ram512x8_inst.INIT_0 = 256'h0000000000000000000000000000000000000000000000000000000000000000; //Only the second half of this is memory locations accessibly in this processor
