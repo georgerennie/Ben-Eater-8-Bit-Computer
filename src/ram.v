@@ -14,20 +14,10 @@ module ram (
 
     input MI, //Reads address into MAR from bus on clock posedge
     input RO, //Ouputs ram to bus
-    input RI, //Enables ram being read on positive clock edges
-    
-    input program, //Puts ram into programming mode
-    input [3 : 0] manual_addr, //The address to be written to when in program mode
-    input [7 : 0] manual_data_in, //To write data in when in program mode
-    input manual_clk //Manually clock data into ram in program mode
+    input RI //Enables ram being read on positive clock edges
     );
 
-    wire [3 : 0] memory_address;
     wire [3 : 0] mar_out;
-    assign memory_address = program ? manual_addr : mar_out;
-
-    wire [7 : 0] data_in;
-    assign data_in = program ? manual_data_in : bus;
 
     register MAR [3 : 0] (
         .in(bus[3 : 0]),
@@ -36,24 +26,19 @@ module ram (
         .load(MI),
         .clr(clr)
     );
-
-    wire ram_clk;
-    assign ram_clk = program ? manual_clk : clk;
-    wire ram_read_enable;
-    assign ram_read_enable = program ? 1'b1 : RI;
  
     wire [7 : 0] ram_out;
     SB_RAM512x8 ram512x8_inst (
-        .RADDR({5'h0, memory_address}),
-        .RCLK(ram_clk),
+        .RADDR({5'h0, mar_out}),
+        .RCLK(clk),
         .RCLKE(1'b1),
         .RDATA(ram_out),
         .RE(1'b1),
-        .WDATA(data_in),
-        .WADDR({5'h0, memory_address}),
-        .WCLK(ram_clk),
+        .WDATA(bus),
+        .WADDR({5'h0, mar_out}),
+        .WCLK(clk),
         .WCLKE(1'b1),
-        .WE(ram_read_enable)
+        .WE(RI)
     );
 
     tri_state_buffer output_buf [7 : 0] (

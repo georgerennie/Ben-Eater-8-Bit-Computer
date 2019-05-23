@@ -5,8 +5,10 @@
 `include `GRVM_PATH(synchronous/reset_conditioner.v)
 `include `GRVM_PATH(interfacing/tri_state_buffer.v)
 `include `GRVM_PATH(synchronous/binary_counter.v)
+`include `GRVM_PATH(logic/dff.v)
 
 `include "alu.v"
+`include "ram.v"
 
 module top(
     input clk,               // 100MHz clock
@@ -55,8 +57,14 @@ module top(
         .top(32'hFFFFFFFF)
     );
 
+    dff manual_clk_buffer (
+        //This makes the data clock into ram right 
+        //I'm not entirely sure why
+        .D(button_pd_out[0]),
+        .clk(clk)
+    );
+
     assign slow_clk = ~clk_count.out[27];
-    //assign slow_clk = clk;
 
     tri_state_buffer test_input [7 : 0] (
         .in(dip_pd_out[7 : 0]),
@@ -78,8 +86,17 @@ module top(
         .subtract(dip_pd_out[17])
     );
 
+    ram ram_inst(
+        .bus(main_bus),
+        .clk(slow_clk),
+        .clr(rst),
+
+        .MI(dip_pd_out[16]),
+        .RO(dip_pd_out[15]),
+        .RI(dip_pd_out[14])
+    );
+
     always @* begin
-        io_led [9 : 8] = {alu_inst.zero, alu_inst.carry};
         led[0] = slow_clk;
     end
 
