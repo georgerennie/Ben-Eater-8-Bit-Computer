@@ -71,7 +71,7 @@ module top(
     alu alu_inst (
         .bus(main_bus),
         .clk(slow_clk),
-        .clr(rst),
+        .rst(rst),
 
         .load_A(dip_pd_out[22]),
         .load_B(dip_pd_out[21]),
@@ -85,7 +85,7 @@ module top(
     ram ram_inst (
         .bus(main_bus),
         .clk(slow_clk),
-        .clr(rst),
+        .rst(rst),
 
         .MI(dip_pd_out[16]),
         .RO(dip_pd_out[15]),

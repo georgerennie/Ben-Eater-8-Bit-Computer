@@ -10,7 +10,7 @@
 module ram (
     inout [7 : 0] bus,
     input clk,
-    input clr,
+    input rst,
 
     input MI, //Reads address into MAR from bus on clock posedge
     input RO, //Ouputs ram to bus
@@ -24,7 +24,7 @@ module ram (
         .out(mar_out),
         .clk(clk),
         .load(MI),
-        .clr(clr)
+        .clr(rst)
     );
  
     wire [7 : 0] ram_out;
