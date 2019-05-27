@@ -26,13 +26,6 @@ module top(
     output usb_tx            // USB->Serial output
     );
 
-    wire rst;
-    reset_conditioner reset_cond (
-        .clk(clk),
-        .in(~rst_n),
-        .out(rst)
-    );
-
     //emulate_pull_down caters for the lack of pull down resistors on the Cu
     wire[23:0] dip_pd_out;
     emulate_pull_down #(.SIZE (24)) dip_pd(
@@ -46,10 +39,12 @@ module top(
         .in(io_button),
         .out(button_pd_out));
 
-    wire [7 : 0] main_bus;
-    always @* begin
-      io_led[7 : 0] = main_bus;
-    end
+    wire rst;
+    reset_conditioner reset_cond (
+        .clk(clk),
+        .in(~rst_n),
+        .out(rst)
+    );
 
     binary_counter #(.SIZE(32)) clk_count (
         .clk(clk),
@@ -61,6 +56,11 @@ module top(
     assign slow_clk = ~clk_count.out[25];
     wire sev_seg_clk;
     assign sev_seg_clk = ~clk_count.out[15];
+
+    wire [7 : 0] main_bus;
+    always @* begin
+      io_led[7 : 0] = main_bus;
+    end
 
     tri_state_buffer test_input [7 : 0] (
         .in(dip_pd_out[7 : 0]),
@@ -97,7 +97,8 @@ module top(
         .clk(slow_clk),
         .CO(dip_pd_out[13]),
         .CE(dip_pd_out[12]),
-        .J(dip_pd_out[11])
+        .J(dip_pd_out[11]),
+        .rst(rsts)
     );
 
     sev_seg_out sev_seg_out_inst (
