@@ -57,13 +57,6 @@ module top(
         .top(32'hFFFFFFFF)
     );
 
-    dff manual_clk_buffer (
-        //This makes the data clock into ram right 
-        //I'm not entirely sure why
-        .D(button_pd_out[0]),
-        .clk(clk)
-    );
-
     assign slow_clk = ~clk_count.out[25];
 
     tri_state_buffer test_input [7 : 0] (
