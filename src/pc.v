@@ -8,7 +8,8 @@ module pc (
     input clk,
     input CE, // Count enable
     input J, // Jump
-    input CO // Counter out
+    input CO, // Counter out
+    input rst // Reset
     );
 
     reg [3 : 0] PC;
@@ -23,7 +24,10 @@ module pc (
     always @(posedge clk) begin
         buffer_en = CO;
 
-        if (J) begin
+        if (rst) begin 
+            PC = 4'b0;
+        end
+        else if (J) begin
             PC = bus[3 : 0];
         end
         else if (CE) begin

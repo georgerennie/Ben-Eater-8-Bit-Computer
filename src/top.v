@@ -39,16 +39,9 @@ module top(
         .in(io_button),
         .out(button_pd_out));
 
-    wire rst;
-    reset_conditioner reset_cond (
-        .clk(clk),
-        .in(~rst_n),
-        .out(rst)
-    );
-
     binary_counter #(.SIZE(32)) clk_count (
         .clk(clk),
-        .rst(rst),
+        .rst(1'b0),
         .top(32'hFFFFFFFF)
     );
 
@@ -56,6 +49,13 @@ module top(
     assign slow_clk = ~clk_count.out[25];
     wire sev_seg_clk;
     assign sev_seg_clk = ~clk_count.out[15];
+
+    wire rst;
+    reset_conditioner reset_cond (
+        .clk(slow_clk),
+        .in(~rst_n),
+        .out(rst)
+    );
 
     wire [7 : 0] main_bus;
     always @* begin
@@ -98,7 +98,7 @@ module top(
         .CO(dip_pd_out[13]),
         .CE(dip_pd_out[12]),
         .J(dip_pd_out[11]),
-        .rst(rsts)
+        .rst(rst)
     );
 
     sev_seg_out sev_seg_out_inst (
