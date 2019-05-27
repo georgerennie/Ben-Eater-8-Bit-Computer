@@ -9,6 +9,7 @@
 `include "alu.v"
 `include "ram.v"
 `include "pc.v"
+`include "sev_seg_out.v"
 
 module top(
     input clk,               // 100MHz clock
@@ -18,8 +19,8 @@ module top(
     output reg [23:0] io_led, // Alchitry IO pins
     inout [23:0] io_dip,
     inout [4:0] io_button,
-    output reg [7:0] io_seg,
-    output reg [3:0] io_sel,
+    output [7:0] io_seg,
+    output [3:0] io_sel,
 
     input usb_rx,            // USB->Serial input
     output usb_tx            // USB->Serial output
@@ -50,14 +51,16 @@ module top(
       io_led[7 : 0] = main_bus;
     end
 
-    wire slow_clk;
     binary_counter #(.SIZE(32)) clk_count (
         .clk(clk),
         .rst(rst),
         .top(32'hFFFFFFFF)
     );
 
+    wire slow_clk;
     assign slow_clk = ~clk_count.out[25];
+    wire sev_seg_clk;
+    assign sev_seg_clk = ~clk_count.out[15];
 
     tri_state_buffer test_input [7 : 0] (
         .in(dip_pd_out[7 : 0]),
@@ -65,7 +68,7 @@ module top(
         .out(main_bus)
     );
 
-    alu alu_inst(
+    alu alu_inst (
         .bus(main_bus),
         .clk(slow_clk),
         .clr(rst),
@@ -79,7 +82,7 @@ module top(
         .subtract(dip_pd_out[17])
     );
 
-    ram ram_inst(
+    ram ram_inst (
         .bus(main_bus),
         .clk(slow_clk),
         .clr(rst),
@@ -89,12 +92,23 @@ module top(
         .RI(dip_pd_out[14])
     );
 
-    pc pc_inst(
+    pc pc_inst (
         .bus(main_bus),
         .clk(slow_clk),
         .CO(dip_pd_out[13]),
         .CE(dip_pd_out[12]),
         .J(dip_pd_out[11])
+    );
+
+    sev_seg_out sev_seg_out_inst (
+        .bus(main_bus),
+        .bus_clk(slow_clk),
+        .sev_seg_clk(sev_seg_clk),
+
+        .OI(dip_pd_out[10]),
+        
+        .segs(io_seg),
+        .sel(io_sel)
     );
 
     always @* begin
