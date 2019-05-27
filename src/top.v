@@ -107,6 +107,7 @@ module top(
         .sev_seg_clk(sev_seg_clk),
 
         .OI(dip_pd_out[10]),
+        .rst(rst),
         
         .segs(io_seg),
         .sel(io_sel)

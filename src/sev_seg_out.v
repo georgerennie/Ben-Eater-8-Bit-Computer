@@ -17,6 +17,8 @@ module sev_seg_out (
     twos complement displaying if set */
     input twos_complement,
 
+    input rst,
+
     output [7 : 0] segs, //Outputs to control each segment
     output [3 : 0] sel //Select which segment is being controlled
     );
@@ -27,7 +29,7 @@ module sev_seg_out (
         .out(display_data),
 
         .clk(bus_clk),
-        .clr(1'b0),
+        .clr(rst),
         .load(OI)
     );
 
