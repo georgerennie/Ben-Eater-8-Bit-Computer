@@ -75,13 +75,13 @@ module top(
         .clk(bus_clk),
         .rst(rst),
 
-        .load_A(dip_pd_out[22]),
-        .load_B(dip_pd_out[21]),
-        .write_A(dip_pd_out[20]),
-        .write_B(dip_pd_out[19]),
+        .AI(dip_pd_out[22]),
+        .BI(dip_pd_out[21]),
+        .AO(dip_pd_out[20]),
+        .BO(dip_pd_out[19]),
 
-        .write_ALU(dip_pd_out[18]),
-        .subtract(dip_pd_out[17])
+        .EO(dip_pd_out[18]),
+        .SU(dip_pd_out[17])
     );
 
     ram ram_inst (

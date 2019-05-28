@@ -9,13 +9,13 @@ module alu(
     input clk,
     input rst, //Clears registers
 
-    input load_A, //load and write alu registers to/from bus
-    input load_B,
-    input write_A,
-    input write_B,
+    input AI, //load and write alu registers to/from bus
+    input BI,
+    input AO,
+    input BO,
 
-    input write_ALU, //write alu output to bus
-    input subtract, //out = subtract ? A - B : A + B
+    input EO, //Sum output
+    input SU, //Subtract
 
     output carry, //Carry flag output to be fed into flag register
     output zero //Zero flag output to be fed into flag register
