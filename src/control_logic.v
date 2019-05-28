@@ -45,7 +45,7 @@ module control_logic (
         .in(microcode_count),
         .out(one_hot_count_out)
     );
-    assign microcode_counter_reset = one_hot_count_out[6];
+    assign microcode_counter_reset = one_hot_count_out[5];
 
 endmodule
 
