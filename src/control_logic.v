@@ -11,8 +11,8 @@ module control_logic (
     output MI, //MAR in
     output RI, //RAM IO
     output RO,
-    /*output IO, //Instruction register IO
-    output II, //Should this actually be implemented in this file?*/
+    output IO, //Instruction register IO
+    output II,
     output AI, //ALU A Reg IO
     output AO,
     output EO, //Sum Out
@@ -22,7 +22,9 @@ module control_logic (
     output OI, //Output Register in
     output CE, //PC Count enable
     output CO, //PC Out
-    output J   //PC Jump
+    output J,  //PC Jump
+
+    input IR_MSB4 //4 most significant bits of instruction register
     );
 
     wire [2 : 0] microcode_count;

@@ -7,6 +7,7 @@
 `include `GRVM_PATH(synchronous/binary_counter.v)
 
 `include "alu.v"
+`include "instruction_register.v"
 `include "ram.v"
 `include "pc.v"
 `include "sev_seg_out.v"
@@ -95,6 +96,18 @@ module top(
         .SU(SU)
     );
 
+    wire IO, II;
+    wire [3 : 0] IR_MSB4;
+    instruction_register instruction_register_inst (
+        .bus(main_bus),
+        .clk(bus_clk),
+        .rst(rst),
+
+        .MSB4(IR_MSB4),
+        .IO(IO),
+        .II(II)
+    );
+
     wire CO, CE, J;
     pc pc_inst (
         .bus(main_bus),
@@ -126,6 +139,8 @@ module top(
         .MI(MI),
         .RI(RI),
         .RO(RO),
+        .IO(IO),
+        .II(II),
         .AI(AI),
         .AO(AO),
         .EO(EO),
@@ -135,7 +150,9 @@ module top(
         .OI(OI),
         .CE(CE),
         .CO(CO),
-        .J(J)
+        .J(J),
+
+        .IR_MSB4(IR_MSB4)
     );
 
     always @* begin
