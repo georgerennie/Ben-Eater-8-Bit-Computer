@@ -14,7 +14,7 @@ module alu(
     input AO,
     input BO,
 
-    input EO, //Sum output
+    input EO, //Output to bus
     input SU, //Subtract
 
     output carry, //Carry flag output to be fed into flag register
@@ -26,7 +26,7 @@ module alu(
         .in(bus),
         .clk(clk),
         .clr(rst),
-        .load(load_A),
+        .load(AI),
         .out(reg_A_out)
     );
 
@@ -35,7 +35,7 @@ module alu(
         .in(bus),
         .clk(clk),
         .clr(rst),
-        .load(load_B),
+        .load(BI),
         .out(reg_B_out)
     );
 
@@ -44,21 +44,21 @@ module alu(
         .B(reg_B_out),
         .bus(bus),
 
-        .subtract(subtract),
-        .output_enable(write_ALU),
+        .subtract(SU),
+        .output_enable(EO),
         .carry(carry),
         .zero(zero)
     );
 
     tri_state_buffer buffer_A [7 : 0] (
         .in(reg_A_out),
-        .enable(write_A),
+        .enable(AO),
         .out(bus)
     );
 
     tri_state_buffer buffer_B [7 : 0] (
         .in(reg_B_out),
-        .enable(write_B),
+        .enable(BO),
         .out(bus)
     );
 
