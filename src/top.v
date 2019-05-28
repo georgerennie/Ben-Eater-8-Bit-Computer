@@ -45,14 +45,16 @@ module top(
         .top(32'hFFFFFFFF)
     );
 
-    wire slow_clk;
-    assign slow_clk = ~clk_count.out[25];
+    wire bus_clk;
+    assign bus_clk = clk_count.out[25];
+    wire control_clk;
+    assign control_clk = ~bus_clk;
     wire sev_seg_clk;
     assign sev_seg_clk = ~clk_count.out[15];
 
     wire rst;
     reset_conditioner reset_cond (
-        .clk(slow_clk),
+        .clk(bus_clk),
         .in(~rst_n),
         .out(rst)
     );
@@ -70,7 +72,7 @@ module top(
 
     alu alu_inst (
         .bus(main_bus),
-        .clk(slow_clk),
+        .clk(bus_clk),
         .rst(rst),
 
         .load_A(dip_pd_out[22]),
@@ -84,7 +86,7 @@ module top(
 
     ram ram_inst (
         .bus(main_bus),
-        .clk(slow_clk),
+        .clk(bus_clk),
         .rst(rst),
 
         .MI(dip_pd_out[16]),
@@ -94,7 +96,7 @@ module top(
 
     pc pc_inst (
         .bus(main_bus),
-        .clk(slow_clk),
+        .clk(bus_clk),
         .CO(dip_pd_out[13]),
         .CE(dip_pd_out[12]),
         .J(dip_pd_out[11]),
@@ -103,7 +105,7 @@ module top(
 
     sev_seg_out sev_seg_out_inst (
         .bus(main_bus),
-        .bus_clk(slow_clk),
+        .bus_clk(bus_clk),
         .sev_seg_clk(sev_seg_clk),
 
         .OI(dip_pd_out[10]),
@@ -114,7 +116,7 @@ module top(
     );
 
     always @* begin
-        led[0] = slow_clk;
+        led[0] = bus_clk;
     end
 
 endmodule
