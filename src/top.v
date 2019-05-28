@@ -10,6 +10,7 @@
 `include "ram.v"
 `include "pc.v"
 `include "sev_seg_out.v"
+`include "control_logic.v"
 
 module top(
     input clk,               // 100MHz clock
@@ -45,15 +46,10 @@ module top(
         .top(32'hFFFFFFFF)
     );
 
-    wire HLT; //Halt wire
-    wire bus_clk;
+    wire HLT, bus_clk, control_clk, sev_seg_clk;
     assign bus_clk = HLT ? 0 : clk_count.out[25];
-    wire control_clk;
     assign control_clk = ~bus_clk;
-    wire sev_seg_clk;
     assign sev_seg_clk = ~clk_count.out[15];
-
-    assign HLT = dip_pd_out[9];
 
     wire rst;
     reset_conditioner reset_cond (
@@ -73,49 +69,73 @@ module top(
         .out(main_bus)
     );
 
-    alu alu_inst (
-        .bus(main_bus),
-        .clk(bus_clk),
-        .rst(rst),
-
-        .AI(dip_pd_out[22]),
-        .BI(dip_pd_out[21]),
-        .AO(dip_pd_out[20]),
-        .BO(dip_pd_out[19]),
-
-        .EO(dip_pd_out[18]),
-        .SU(dip_pd_out[17])
-    );
-
+    wire MI, RO, RI;
     ram ram_inst (
         .bus(main_bus),
         .clk(bus_clk),
         .rst(rst),
 
-        .MI(dip_pd_out[16]),
-        .RO(dip_pd_out[15]),
-        .RI(dip_pd_out[14])
+        .MI(MI),
+        .RO(RO),
+        .RI(RI)
     );
 
+    wire AI, BI, AO, BO, EO, SU;
+    alu alu_inst (
+        .bus(main_bus),
+        .clk(bus_clk),
+        .rst(rst),
+
+        .AI(AI),
+        .BI(BI),
+        .AO(AO),
+        .BO(BO),
+
+        .EO(EO),
+        .SU(SU)
+    );
+
+    wire CO, CE, J;
     pc pc_inst (
         .bus(main_bus),
         .clk(bus_clk),
-        .CO(dip_pd_out[13]),
-        .CE(dip_pd_out[12]),
-        .J(dip_pd_out[11]),
-        .rst(rst)
+        .rst(rst),
+
+        .CO(CO),
+        .CE(CE),
+        .J(J)
     );
 
+    wire OI;
     sev_seg_out sev_seg_out_inst (
         .bus(main_bus),
         .bus_clk(bus_clk),
         .sev_seg_clk(sev_seg_clk),
 
-        .OI(dip_pd_out[10]),
+        .OI(OI),
         .rst(rst),
         
         .segs(io_seg),
         .sel(io_sel)
+    );
+
+    control_logic control_logic_inst (
+        .control_clk(control_clk),
+
+        .HLT(HLT),
+        .MI(MI),
+        .RI(RI),
+        .RO(RO),
+        .AI(AI),
+        .AO(AO),
+        .EO(EO),
+        .SU(SU),
+        .BI(BI),
+        .BO(BO),
+        .OI(OI),
+        .CE(CE),
+        .CO(CO),
+        .J(J)
     );
 
     always @* begin
