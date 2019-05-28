@@ -17,8 +17,8 @@ module alu(
     input EO, //Output to bus
     input SU, //Subtract
 
-    output carry, //Carry flag output to be fed into flag register
-    output zero //Zero flag output to be fed into flag register
+    output CY, //Carry flag output to be fed into flag register
+    output Z //Zero flag output to be fed into flag register
     );
 
     wire [7 : 0] reg_A_out;
