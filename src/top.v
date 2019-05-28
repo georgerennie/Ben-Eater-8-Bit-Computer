@@ -45,12 +45,15 @@ module top(
         .top(32'hFFFFFFFF)
     );
 
+    wire HLT; //Halt wire
     wire bus_clk;
-    assign bus_clk = clk_count.out[25];
+    assign bus_clk = HLT ? 0 : clk_count.out[25];
     wire control_clk;
     assign control_clk = ~bus_clk;
     wire sev_seg_clk;
     assign sev_seg_clk = ~clk_count.out[15];
+
+    assign HLT = dip_pd_out[9];
 
     wire rst;
     reset_conditioner reset_cond (
