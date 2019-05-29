@@ -18,7 +18,6 @@ module control_logic (
     output EO, //Sum Out
     output SU, //Subtract
     output BI, //ALU B Reg IO
-    output BO,
     output OI, //Output Register in
     output CE, //PC Count enable
     output CO, //PC Out
