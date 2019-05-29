@@ -1,13 +1,16 @@
-import xlrd
-import os.path
+import xlrd, os.path
+from string import Template
 
 #--------------------------------Begin Settings---------------------------------
 
 #Workbook path relative to the path of this file
-current_path = os.path.abspath(os.path.dirname(__file__))
-workbook_path = os.path.join(current_path, "../Instruction_Set_Microcode.xlsx")
+current_dir = os.path.abspath(os.path.dirname(__file__))
+workbook_path = os.path.join(current_dir, "../Instruction_Set_Microcode.xlsx")
+#Verilog template file path
+template_path = current_dir + "/BRAM_template_module.v"
 
-#Verilog path 
+#Output Verilog Module Name
+output_module_name = "instruction_decoder"
 
 #Workbook first row and column of data (Zero-Indexed)
 workbook_first_row = 2
@@ -81,4 +84,37 @@ def generate_hex_strs_from_mem_array(memory_array):
 
     return out_strs
 
-print(generate_hex_strs_from_mem_array(generate_bin_memory_array(ingest(workbook_path))))
+def open_and_template_verilog(path, template_dic):
+    filein = open(path)
+    src = Template(filein.read())
+    return src.safe_substitute(template_dic)
+
+def main():
+    ingested_data = ingest(workbook_path)
+    mem_array = generate_bin_memory_array(ingested_data)
+    hex_strs = generate_hex_strs_from_mem_array(mem_array)
+
+    template_dic = {
+        'module_name' : output_module_name,
+
+        'data_0' : hex_strs[0],
+        'data_1' : hex_strs[1],
+        'data_2' : hex_strs[2],
+        'data_3' : hex_strs[3],
+        'data_4' : hex_strs[4],
+        'data_5' : hex_strs[5],
+        'data_6' : hex_strs[6],
+        'data_7' : hex_strs[7],
+        'data_8' : hex_strs[8],
+        'data_9' : hex_strs[9],
+        'data_A' : hex_strs[10],
+        'data_B' : hex_strs[11],
+        'data_C' : hex_strs[12],
+        'data_D' : hex_strs[13],
+        'data_E' : hex_strs[14],
+        'data_F' : hex_strs[15],
+    }
+
+    print(open_and_template_verilog(template_path, template_dic))
+
+main()
