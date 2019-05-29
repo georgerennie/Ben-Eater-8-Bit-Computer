@@ -39,7 +39,7 @@ def bin_array_nibble_to_hex_char(binary):
     else: out_char = chr(int_of_bin+55)
     return out_char
     
-def bin_array_to_hex_char(binary):
+def bin_array_to_hex_str(binary):
     out_str = ""
 
     while (len(binary) % 4) != 0:
@@ -51,4 +51,4 @@ def bin_array_to_hex_char(binary):
     return out_str
 
 
-print(bin_array_to_hex_char([0, 1, 1, 0, 1]))
+print(bin_array_to_hex_str([0, 1, 1, 0, 1]))
