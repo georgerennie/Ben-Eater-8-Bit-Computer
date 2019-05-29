@@ -81,7 +81,7 @@ module top(
         .RI(RI)
     );
 
-    wire AI, BI, AO, BO, EO, SU;
+    wire AI, BI, AO, EO, SU;
     alu alu_inst (
         .bus(main_bus),
         .clk(bus_clk),
@@ -90,7 +90,7 @@ module top(
         .AI(AI),
         .BI(BI),
         .AO(AO),
-        .BO(BO),
+        .BO(1'b0),
 
         .EO(EO),
         .SU(SU)
@@ -146,7 +146,6 @@ module top(
         .EO(EO),
         .SU(SU),
         .BI(BI),
-        .BO(BO),
         .OI(OI),
         .CE(CE),
         .CO(CO),
