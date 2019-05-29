@@ -14,16 +14,13 @@ module pc (
 
     reg [3 : 0] PC;
 
-    reg buffer_en;
     tri_state_buffer out_buffer [3 : 0] (
         .in(PC),
-        .enable(buffer_en),
+        .enable(CO),
         .out(bus[3 : 0])
     );
 
     always @(posedge clk) begin
-        buffer_en = CO;
-
         if (rst) begin 
             PC = 4'b0;
         end
