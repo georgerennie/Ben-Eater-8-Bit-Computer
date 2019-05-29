@@ -32,4 +32,23 @@ def bin_array_to_int(binary):
         int_out += (binary[-i-1] != 0) * (1 << (i))
     return int_out   
 
-ingest(workbook_path)
+def bin_array_nibble_to_hex_char(binary):
+    out_char = ""
+    int_of_bin = bin_array_to_int(binary)
+    if (int_of_bin <= 9): out_char = str(int_of_bin)
+    else: out_char = chr(int_of_bin+55)
+    return out_char
+    
+def bin_array_to_hex_char(binary):
+    out_str = ""
+
+    while (len(binary) % 4) != 0:
+        binary = [0] + binary
+
+    for i in range(0, int(len(binary) / 4)):
+        out_str += bin_array_nibble_to_hex_char(binary[4 * i : 4 * i + 4])
+
+    return out_str
+
+
+print(bin_array_to_hex_char([0, 1, 1, 0, 1]))
