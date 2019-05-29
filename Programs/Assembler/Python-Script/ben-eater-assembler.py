@@ -17,6 +17,9 @@ first_bit_col = 2
 #Number of bits per instruction in workbook
 instr_bits = 4
 
+#Top memory address
+top_mem = 15
+
 #---------------------------------End Settings----------------------------------
 
 def bin_array_to_int(binary):
@@ -71,16 +74,21 @@ def read_src_to_lines(path):
     file.close()
     return text.splitlines()
 
+def add_line_numbers_to_src(src):
+    for i, line in enumerate(src):
+        src[i] = [i + 1, line]
+    return src
+
 def remove_comments(src):
     for i, line in enumerate(src):
-        split_by_comment = line.split("#")
-        src[i] = split_by_comment[0]
+        split_by_comment = line[1].split("#")
+        src[i][1] = split_by_comment[0]
     return src
 
 def split_by_spaces(src):
     for i, line in enumerate(src):
-        split_by_space = line.split(" ")
-        src[i] = split_by_space
+        split_by_space = line[1].split(" ")
+        src[i][1] = split_by_space
     return src
 
 def remove_empty_addresses(src):
@@ -89,24 +97,48 @@ def remove_empty_addresses(src):
 
 def remove_empty_addresses_2d(src):
     for i, line in enumerate(src):
-        src[i] = remove_empty_addresses(line)
-    src = remove_empty_addresses(src)
+        src[i][1] = remove_empty_addresses(line[1])
+    src = [x for x in src if x[1]]
     return src
 
+def raise_illegal_lines(src):
+    for line in src:
+        if (not line[1][0].isdigit() or
+            int(line[1][0]) > top_mem):
+
+            except_str = "Line " + str(line[0]) + ": "
+            except_str += "Memory address is invalid"
+            raise Exception(except_str)
+
+        if (len(line[1]) < 2 or len(line[1]) > 3):
+        
+            except_str = "Line " + str(line[0]) + ": "
+            except_str += "Invalid number of arguments supplied"
+            raise Exception(except_str)
+
 def pre_process_src(src):
+    src = add_line_numbers_to_src(src)
     src = remove_comments(src)
     src = split_by_spaces(src)
     src = remove_empty_addresses_2d(src)
+    for line in src:
+        print(line[1])
+    raise_illegal_lines(src)
     return src
 
+# def generate_memory_map(src, instr_dic):
 
 def main():
-    # instr_dic = ingest_instructions(workbook_path)
     src_path = read_src_path()
     src = read_src_to_lines(src_path)
     src = pre_process_src(src)
 
     for line in src:
         print(line)
+
+    # instr_dic = ingest_instructions(workbook_path)
+    # mem_map = generate_memory_map(src, instr_dic)
+
+    # print(mem_map)
 
 main()
