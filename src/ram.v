@@ -16,28 +16,18 @@ module ram (
     input RO, //Ouputs ram to bus
     input RI //Enables ram being read on positive clock edges
     );
-
-    wire [3 : 0] mar_out;
-
-    register MAR [3 : 0] (
-        .in(bus[3 : 0]),
-        .out(mar_out),
-        .clk(clk),
-        .load(MI),
-        .clr(rst)
-    );
  
     wire [7 : 0] ram_out;
     SB_RAM512x8 ram512x8_inst (
-        .RADDR({5'h0, mar_out}),
+        .RADDR({5'h0, bus[3 : 0]}),
         .RCLK(clk),
-        .RCLKE(1'b1),
+        .RCLKE(MI),
         .RDATA(ram_out),
         .RE(1'b1),
         .WDATA(bus),
-        .WADDR({5'h0, mar_out}),
+        .WADDR({5'h0, bus[3 : 0]}),
         .WCLK(clk),
-        .WCLKE(1'b1),
+        .WCLKE(MI),
         .WE(RI)
     );
 
@@ -47,7 +37,7 @@ module ram (
         .enable(RO)
     );
 
-    defparam ram512x8_inst.INIT_0 = 256'h0000000000000000000000000000000000000000000000000000000000000000; //Only the second half of this is memory locations accessibly in this processor
+    //defparam ram512x8_inst.INIT_0 = 256'h00000000000000000000000000000000000000000000000000000000ABF0E013; //Only the second half of this is memory locations accessibly in this processor
 
 endmodule
 

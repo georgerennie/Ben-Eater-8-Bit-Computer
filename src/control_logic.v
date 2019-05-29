@@ -1,11 +1,13 @@
 `ifndef _control_logic_v_
 `define _control_logic_v_
 
-`include `GRVM_PATH(synchronous/pow_2_binary_counter.v)
-`include `GRVM_PATH(encoding/binary_to_one_hot.v)
+`include `GRVM_PATH(synchronous/binary_counter.v)
+
+`include "instruction_decoder.v"
 
 module control_logic (
     input control_clk,
+    input rst,
     
     output HLT, //Halt
     output MI, //MAR in
@@ -23,28 +25,51 @@ module control_logic (
     output CO, //PC Out
     output J,  //PC Jump
 
-    input IR_MSB4 //4 most significant bits of instruction register
+    input [3 : 0] IR_MSB4 //4 most significant bits of instruction register
     );
 
     wire [2 : 0] microcode_count;
-    wire microcode_counter_reset;
-    pow_2_binary_counter #(
+    binary_counter #(
         .SIZE(3),
         .SYNC_RESET(0)  //check this
         ) microcode_counter (
         .clk(control_clk),
-        .rst(microcode_counter_reset),
+        .rst(rst),
+        .top(3'b100),
         .out(microcode_count)
     );
 
-    wire [7 : 0] one_hot_count_out;
-    binary_to_one_hot #(
-        .SIZE(3)
-        ) one_hot_count (
-        .in(microcode_count),
-        .out(one_hot_count_out)
+    wire [7 : 0] instr_decoder_addr;
+    assign instr_decoder_addr = {
+        IR_MSB4[3 : 0],
+        1'b0,
+        microcode_count[2 : 0]
+    };
+
+    wire [15 : 0] instr_decoder_data;
+    assign {
+        HLT,
+        MI,
+        RI,
+        RO,
+        IO,
+        II,
+        AI,
+        AO,
+        EO,
+        SU,
+        BI,
+        OI,
+        CE,
+        CO,
+        J
+    } = instr_decoder_data[15 : 1];
+
+    instruction_decoder instr_decoder_inst (
+        .clk(control_clk),
+        .address(instr_decoder_addr),
+        .data(instr_decoder_data)
     );
-    assign microcode_counter_reset = one_hot_count_out[5];
 
 endmodule
 

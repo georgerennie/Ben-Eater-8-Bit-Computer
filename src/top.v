@@ -48,7 +48,7 @@ module top(
     );
 
     wire HLT, bus_clk, control_clk, sev_seg_clk;
-    assign bus_clk = HLT ? 0 : clk_count.out[25];
+    assign bus_clk = HLT ? 0 : clk_count.out[24];
     assign control_clk = ~bus_clk;
     assign sev_seg_clk = ~clk_count.out[15];
 
@@ -73,7 +73,7 @@ module top(
     wire MI, RO, RI;
     ram ram_inst (
         .bus(main_bus),
-        .clk(bus_clk),
+        .clk(control_clk),
         .rst(rst),
 
         .MI(MI),
@@ -134,6 +134,7 @@ module top(
 
     control_logic control_logic_inst (
         .control_clk(control_clk),
+        .rst(rst),
 
         .HLT(HLT),
         .MI(MI),
