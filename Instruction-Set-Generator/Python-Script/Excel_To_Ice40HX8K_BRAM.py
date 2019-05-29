@@ -1,6 +1,8 @@
 import xlrd
 import os.path
 
+#--------------------------------Begin Settings---------------------------------
+
 #Workbook path relative to the path of this file
 current_path = os.path.abspath(os.path.dirname(__file__))
 workbook_path = os.path.join(current_path, "../Instruction_Set_Microcode.xlsx")
@@ -12,6 +14,8 @@ workbook_first_column = 2
 #Determine how many rows of the excel sheet are used for each
 address_bits = 8
 data_bits = 8
+
+#---------------------------------End Settings----------------------------------
 
 def ingest(path): #Returns an array with all the 1s and 0s from the excel
     workbook = xlrd.open_workbook(workbook_path)
@@ -49,6 +53,5 @@ def bin_array_to_hex_str(binary):
         out_str += bin_array_nibble_to_hex_char(binary[4 * i : 4 * i + 4])
 
     return out_str
-
 
 print(bin_array_to_hex_str([0, 1, 1, 0, 1]))
