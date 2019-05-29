@@ -17,11 +17,12 @@ module ${module_name} (
         .RCLKE(1'b1),
         .RDATA(data),
         .RE(1'b1),
-        .WDATA(bus),
+        .WDATA(16'b0),
         .WADDR(8'b0),
         .WCLK(1'b0),
         .WCLKE(1'b0),
-        .WE(1'b0)
+        .WE(1'b0),
+        .MASK(16'b0)
     );
 
     defparam ram256x16_inst.INIT_0 = 256'h${data_0};
