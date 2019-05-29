@@ -69,6 +69,12 @@ def generate_bin_memory_array(ingested_data):
 
     return memory_array
 
+def generate_hex_str_from_mem_array(memory_array):
+    out_str = ""
 
-for row in generate_bin_memory_array(ingest(workbook_path)):
-    print(row)
+    for row in memory_array:
+        out_str = bin_array_to_hex_str(row) + out_str
+
+    return out_str
+
+print(generate_hex_str_from_mem_array(generate_bin_memory_array(ingest(workbook_path))))
