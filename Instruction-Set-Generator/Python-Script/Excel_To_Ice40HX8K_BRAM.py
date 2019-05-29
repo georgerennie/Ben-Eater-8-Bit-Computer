@@ -11,6 +11,8 @@ template_path = current_dir + "/BRAM_template_module.v"
 
 #Output Verilog Module Name
 output_module_name = "instruction_decoder"
+#Output relative address
+output_path = os.path.join(current_dir, ("../../src/" + output_module_name + ".v"))
 
 #Workbook first row and column of data (Zero-Indexed)
 workbook_first_row = 2
@@ -85,9 +87,16 @@ def generate_hex_strs_from_mem_array(memory_array):
     return out_strs
 
 def open_and_template_verilog(path, template_dic):
-    filein = open(path)
-    src = Template(filein.read())
+    file = open(path)
+    src = Template(file.read())
+    file.close()
     return src.safe_substitute(template_dic)
+
+def write_templated_verilog(path, verilog):
+    file = open(path, 'w+')
+    file.write(verilog)
+    file.close()
+    return
 
 def main():
     ingested_data = ingest(workbook_path)
@@ -115,6 +124,7 @@ def main():
         'data_F' : hex_strs[15],
     }
 
-    print(open_and_template_verilog(template_path, template_dic))
+    templated_verilog = open_and_template_verilog(template_path, template_dic)
+    write_templated_verilog(output_path, templated_verilog)
 
 main()
