@@ -1,6 +1,8 @@
-import xlrd, os.path
+import xlrd, os.path, sys
 
 #--------------------------------Begin Settings---------------------------------
+#NOTE: The source path needs to be passed as the first cmd line argument after
+#this file name
 
 #Workbook path relative to the path of this file
 current_dir = os.path.abspath(os.path.dirname(__file__))
@@ -57,4 +59,54 @@ def ingest_instructions(path):
 
     return instr_dic
 
-print(ingest_instructions(workbook_path))
+def read_src_path():
+    arguments = sys.argv
+    if len(arguments) != 2:
+        raise Exception("Wrong number of cmd line arguments")
+    return arguments[1]
+
+def read_src_to_lines(path):
+    file = open(path)
+    text = file.read()
+    file.close()
+    return text.splitlines()
+
+def remove_comments(src):
+    for i, line in enumerate(src):
+        split_by_comment = line.split("#")
+        src[i] = split_by_comment[0]
+    return src
+
+def split_by_spaces(src):
+    for i, line in enumerate(src):
+        split_by_space = line.split(" ")
+        src[i] = split_by_space
+    return src
+
+def remove_empty_addresses(src):
+    src = [x for x in src if x] #If the line isnt empty keep text
+    return src
+
+def remove_empty_addresses_2d(src):
+    for i, line in enumerate(src):
+        src[i] = remove_empty_addresses(line)
+    src = remove_empty_addresses(src)
+    return src
+
+def pre_process_src(src):
+    src = remove_comments(src)
+    src = split_by_spaces(src)
+    src = remove_empty_addresses_2d(src)
+    return src
+
+
+def main():
+    # instr_dic = ingest_instructions(workbook_path)
+    src_path = read_src_path()
+    src = read_src_to_lines(src_path)
+    src = pre_process_src(src)
+
+    for line in src:
+        print(line)
+
+main()
