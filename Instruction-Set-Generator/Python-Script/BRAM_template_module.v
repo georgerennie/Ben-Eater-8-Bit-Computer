@@ -11,7 +11,7 @@ module ${module_name} (
     input clk
     );
 
-    SB_RAM256x16 ram512x8_inst (
+    SB_RAM256x16 ram256x16_inst (
         .RADDR(address),
         .RCLK(clk),
         .RCLKE(1'b1),
