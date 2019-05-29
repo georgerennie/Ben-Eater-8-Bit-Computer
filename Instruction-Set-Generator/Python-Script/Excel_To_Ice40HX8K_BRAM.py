@@ -49,7 +49,7 @@ def bin_array_to_hex_str(binary):
     return out_str
 
 def ingest(path): #Returns an array with all the 1s and 0s from the excel
-    workbook = xlrd.open_workbook(workbook_path)
+    workbook = xlrd.open_workbook(path)
     current_sheet = workbook.sheet_by_index(0)
 
     array_data = []
