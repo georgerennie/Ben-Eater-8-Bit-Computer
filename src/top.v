@@ -73,7 +73,7 @@ module top(
     wire MI, RO, RI;
     ram ram_inst (
         .bus(main_bus),
-        .clk(control_clk),
+        .clk(bus_clk),
         .rst(rst),
 
         .MI(MI),
