@@ -7,6 +7,8 @@ import os.path
 current_path = os.path.abspath(os.path.dirname(__file__))
 workbook_path = os.path.join(current_path, "../Instruction_Set_Microcode.xlsx")
 
+#Verilog path 
+
 #Workbook first row and column of data (Zero-Indexed)
 workbook_first_row = 2
 workbook_first_column = 2
@@ -69,12 +71,14 @@ def generate_bin_memory_array(ingested_data):
 
     return memory_array
 
-def generate_hex_str_from_mem_array(memory_array):
-    out_str = ""
+def generate_hex_strs_from_mem_array(memory_array):
 
+    out_str = ""
     for row in memory_array:
         out_str = bin_array_to_hex_str(row) + out_str
 
-    return out_str
+    out_strs = [out_str[i : i + 64] for i in range(len(out_str) - 64, -1, -64)]
 
-print(generate_hex_str_from_mem_array(generate_bin_memory_array(ingest(workbook_path))))
+    return out_strs
+
+print(generate_hex_strs_from_mem_array(generate_bin_memory_array(ingest(workbook_path))))
