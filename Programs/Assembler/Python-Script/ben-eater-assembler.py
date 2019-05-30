@@ -65,7 +65,9 @@ def ingest_instructions(path):
 def read_src_path():
     arguments = sys.argv
     if len(arguments) != 2:
-        raise Exception("Wrong number of cmd line arguments")
+        except_str = "Wrong number of cmd line arguments. Found "
+        except_str += str(len(arguments))
+        raise Exception(except_str)
     return arguments[1]
 
 def read_src_to_lines(path):
