@@ -1,0 +1,14 @@
+#Outputs fibonacci numbers in order
+
+0 LDA d13
+1 OUT
+2 STA d14
+3 ADD d15
+4 STA d13
+5 LDA d14
+6 STA d15
+7 JMP d0
+
+13 VAL h01
+14 VAL h00
+15 VAL h01

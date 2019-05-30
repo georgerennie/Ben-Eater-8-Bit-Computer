@@ -1,0 +1,22 @@
+# This program shows comments, out of order instructions
+# missing instructions, and the whole instruction set
+
+0  LDI b1010 # Put value of 10 in A reg
+1  NOP       # Wait
+2  ADD hC    # Add value of mem address 12 to A reg and place in A reg = 2B
+3  STA hD    # Store value from A to mem address 13
+4  LDA hC    # Load value from mem address 12 to A
+5  OUT       # Display A reg = 21
+6  SUB hB    # Subtract value of mem address 11 from A
+7  OUT       # Display A reg = 03
+#These instructions out of order for illustration
+
+9  JMP d14   # Jump to mem address 14
+8  LDA hD    # Load previously stored value into A
+
+11 val h1E
+12 val h21
+13 val h00
+
+14 OUT       # Display A reg = 2B
+15 HLT       # Halt
