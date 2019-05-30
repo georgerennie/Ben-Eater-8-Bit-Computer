@@ -42,7 +42,7 @@ module ram (
         .enable(RO)
     );
 
-    //defparam ram512x8_inst.INIT_0 = 256'h000000000000000000000000000000001B00000000000000F0E01FE0504FE053; //Only the second half of this is memory locations accessible in this processor
+    defparam ram512x8_inst.INIT_0 = 256'h000000000000000000000000000000000100010000000000604F1E4D2F4EE01D; //Only the second half of this is memory locations accessible in this processor
 
 endmodule
 
