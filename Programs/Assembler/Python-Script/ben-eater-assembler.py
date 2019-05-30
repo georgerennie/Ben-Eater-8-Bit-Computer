@@ -17,8 +17,8 @@ first_bit_col = 2
 #Number of bits per instruction in workbook
 instr_bits = 4
 
-#Top memory address
-top_mem = 15
+#Number of memory addresses
+mem_addresses = 16
 
 #---------------------------------End Settings----------------------------------
 
@@ -104,7 +104,7 @@ def remove_empty_addresses_2d(src):
 def raise_illegal_lines(src):
     for line in src:
         if (not line[1][0].isdigit() or
-            int(line[1][0]) > top_mem):
+            int(line[1][0]) >= mem_addresses):
 
             except_str = "Line " + str(line[0]) + ": "
             except_str += "Memory address is invalid"
@@ -121,24 +121,71 @@ def pre_process_src(src):
     src = remove_comments(src)
     src = split_by_spaces(src)
     src = remove_empty_addresses_2d(src)
-    for line in src:
-        print(line[1])
     raise_illegal_lines(src)
     return src
 
-# def generate_memory_map(src, instr_dic):
+def interpret_value_to_hex(value):
+    out_hex = ""
+    designator = value[0].lower()
+    if (designator == "h"):
+        out_hex = value[1 : ].upper()
+    
+    elif (designator == "b"):
+        bin_arr = [ int(x) for x in value[1 : ]]
+        out_hex = bin_array_to_hex_str(bin_arr)
+    
+    elif (designator == "d"):
+        out_hex = str(hex(int(value[1 : ]))).upper()
+    
+    return out_hex
 
+def generate_memory_map(src, instr_dic):
+    mem_map = [["0"] * 2 for _ in range(mem_addresses)]
+    for line in src:
+        addr = int(line[1][0])
+        data = ["0", "0"]
+
+        instr = line[1][1].upper()
+
+        if (instr == "VAL"):
+            val = interpret_value_to_hex(line[1][2])
+            data[0] = val[0]
+            data[1] = val[1]
+        
+        elif (instr in instr_dic):
+            data[0] = instr_dic[instr]
+            if (len(line[1]) >= 3):
+                val = interpret_value_to_hex(line[1][2])
+                #TODO: raise error if wrong length of val
+                data[1] = val[-1]
+
+        else:
+            except_str = "Line " + str(line[0]) + ": "
+            except_str += "Instruction unrecognised"
+            raise Exception(except_str)
+
+        mem_map[addr] = data
+
+    return mem_map
+
+def mem_map_to_BRAM_hex(mem_map):
+    out_str = ""
+    for line in mem_map:
+        out_str = line[0] + line[1] + out_str
+    
+    #Pad to 64 chars
+    out_str = ("0" * (64 - len(out_str))) + out_str
+    return out_str
+        
 def main():
     src_path = read_src_path()
     src = read_src_to_lines(src_path)
     src = pre_process_src(src)
 
-    for line in src:
-        print(line)
+    instr_dic = ingest_instructions(workbook_path)
+    mem_map = generate_memory_map(src, instr_dic)
 
-    # instr_dic = ingest_instructions(workbook_path)
-    # mem_map = generate_memory_map(src, instr_dic)
-
-    # print(mem_map)
+    BRAM_hex = mem_map_to_BRAM_hex(mem_map)
+    print(BRAM_hex)
 
 main()
