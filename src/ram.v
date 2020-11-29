@@ -17,20 +17,20 @@ module ram (
     input RI //Enables ram being read on positive clock edges
     );
 
-    reg [8 : 0] mar;
+    reg [3 : 0] mar;
     always @(posedge clk) begin
-        mar = {5'h0, bus[3 : 0]};
+        mar = bus[3 : 0];
     end
 
     wire [7 : 0] ram_out;
     SB_RAM512x8 ram512x8_inst (
-        .RADDR(mar),
+        .RADDR({5'h0, mar}),
         .RCLK(~clk),
         .RCLKE(1'b1),
         .RDATA(ram_out),
         .RE(1'b1),
         .WDATA(bus),
-        .WADDR(mar),
+        .WADDR({5'h0, mar}),
         .WCLK(clk),
         .WCLKE(1'b1),
         .WE(RI)
