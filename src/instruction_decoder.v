@@ -2,14 +2,14 @@
 located in Instruction-Set-Generator. Any changes made to this file will be
 deleted when this python script runs*/
 
-`ifndef _instruction_decoder_v_
-`define _instruction_decoder_v_
+`ifndef _INSTRUCTION_DECODER_V_
+`define _INSTRUCTION_DECODER_V_
 
 module instruction_decoder (
-    input  [7  : 0] address,
-    output [15 : 0] data,
+    input  [7:0] instruction,
+    output [15:0] data,
     input clk
-    );
+);
 
     SB_RAM256x16 ram256x16_inst (
         .RADDR(address),
@@ -43,4 +43,4 @@ module instruction_decoder (
     defparam ram256x16_inst.INIT_F = 256'h0000000000000000000000000000000000000000000000000000800014084004;
 
 endmodule
-`endif
+`endif // _INSTRUCTION_DECODER_V_

@@ -1,37 +1,54 @@
-`ifndef _instruction_register_v_
-`define _instruction_register_v_
+`ifndef _INSTRUCTION_REGISTER_V_
+`define _INSTRUCTION_REGISTER_V_
 
-`include `GRVM_PATH(interfacing/register.v)
-`include `GRVM_PATH(interfacing/tri_state_buffer.v)
+`default_nettype none
 
 module instruction_register (
-    inout [7 : 0] bus,
+    inout [7:0] bus,
     input clk,
     input rst,
 
-    output [3 : 0] MSB4, //4 most significant bits of instruction register
-    
-    input IO, //Output
-    input II  //Input
-    );
+    // 4 most significant bits of instruction register
+    output [3:0] MSB4,
 
-    wire [7 : 0] instruction_register_out;
-    register instruction_register [7 : 0] (
-        .in(bus),
-        .out(instruction_register_out),
+    input IO, // Output
+    input II  // Input
+);
 
-        .clk(clk),
-        .load(II),
-        .clr(rst)
-    );
+    reg [7:0] instruction;
+    initial instruction = 0;
+    always @(posedge clk) begin
+        if (rst)
+            instruction = 0;
+        else if (II)
+            instruction = bus;
+    end
 
-    tri_state_buffer instruction_buffer [3 : 0] (
-        .in(instruction_register_out[3 : 0]),
-        .out(bus[3 : 0]),
-        .enable(IO)
-    );
+    assign bus[3:0] = IO ? instruction : 4'bzzzz;
+    assign MSB4 = instruction[7:4];
 
-    assign MSB4 = instruction_register_out[7 : 4];
+`ifdef FORMAL
+    always @* begin
+        // Assume IO and II arent high at the same time
+        if (IO)
+            assume(!II);
+
+        assert(MSB4 == instruction[7:4]);
+        if (IO)
+            assert(bus[3:0] == instruction[3:0]);
+    end
+
+    reg past_valid;
+    initial past_valid = 0;
+    always @(posedge clk) begin
+        past_valid <= 1;
+
+        if ($past(rst))
+            assert(instruction == 0);
+        else if ($past(II) && past_valid)
+            assert(instruction == $past(bus));
+    end
+`endif // FORMAL
 endmodule
 
-`endif
+`endif // _INSTRUCTION_REGISTER_V_

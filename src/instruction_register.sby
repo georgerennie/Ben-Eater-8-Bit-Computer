@@ -1,0 +1,13 @@
+[options]
+mode prove
+depth 20
+
+[engines]
+smtbmc
+
+[script]
+read -formal instruction_register.v
+prep -top instruction_register
+
+[files]
+instruction_register.v

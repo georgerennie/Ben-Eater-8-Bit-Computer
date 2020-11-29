@@ -48,7 +48,7 @@ module top(
     );
 
     wire HLT, bus_clk, control_clk, sev_seg_clk;
-    assign bus_clk = HLT ? 0 : clk_count.out[21];
+    assign bus_clk = HLT ? 0 : clk_count.out[25];
     assign control_clk = ~bus_clk;
     assign sev_seg_clk = ~clk_count.out[15];
 

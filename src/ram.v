@@ -1,7 +1,7 @@
 `ifndef _ram_v_
 `define _ram_v_
 //This ram only presents 16 8-bit words as per ben eater's design
-//In its current implementation this ram cant be reset with the computer reset button, just by power 
+//In its current implementation this ram cant be reset with the computer reset button, just by power
 //This also contains the MAR
 
 `include `GRVM_PATH(interfacing/register.v)
@@ -21,7 +21,7 @@ module ram (
     always @(posedge clk) begin
         mar = {5'h0, bus[3 : 0]};
     end
- 
+
     wire [7 : 0] ram_out;
     SB_RAM512x8 ram512x8_inst (
         .RADDR(mar),
