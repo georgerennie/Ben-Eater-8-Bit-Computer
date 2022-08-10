@@ -4,7 +4,7 @@ Version=Lattice Semiconductor Corporation iCEcube - Release: 2017.08.27940 - Bui
 ProjectName=iCEcube2
 Vendor=SiliconBlue
 Synthesis=synplify
-ProjectVFiles=../src/emulate_pull_down.v,../src/top.v
+ProjectVFiles=../src/emulate_pull_down.v=work,../src/top.v=work
 ProjectCFiles=../synthesis_constraints/clock_constraints.sdc
 CurImplementation=iCEcube2_Implmnt
 Implementations=iCEcube2_Implmnt
@@ -84,5 +84,5 @@ BitmapSetSecurity=no
 BitmapSetNoUsedIONoPullup=no
 FloorPlannerShowFanInNets=yes
 FloorPlannerShowFanOutNets=yes
-HookTo3rdPartyTextEditor=
+HookTo3rdPartyTextEditor=no
 
